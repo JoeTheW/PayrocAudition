@@ -17,7 +17,7 @@ import com.payroc.hospitaloperations.exception.HospitalOperationException;
 
 @Service
 public class OperationService {
-	private static final Logger logger = LoggerFactory.getLogger(RequestCacheService.class);
+	private static final Logger logger = LoggerFactory.getLogger(OperationService.class);
 
     private final OperationDao operationDao;
 
