@@ -14,8 +14,8 @@ CREATE TABLE operation (
     date_queued TIMESTAMP,
     date_processed TIMESTAMP,
     metadata CLOB,
-    request_cache_id INT,
-    FOREIGN KEY (request_cache_id) REFERENCES request_cache(request_cache_id),
+    idempotency_key VARCHAR(100) NOT NULL,
+    -- FOREIGN KEY (request_cache_key) REFERENCES request_cache(request_cache_key),
 
     CHECK (operation_type IN ('DISCHARGE_PATIENT', 'UNDO_DISCHARGE_PATIENT')),
     CHECK (operation_status IN ('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED'))

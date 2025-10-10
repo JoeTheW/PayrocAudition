@@ -6,13 +6,13 @@ import com.payroc.hospitaloperations.enumeration.PatientStatusEnum;
 
 public class OperationDTO {
 	
-	private Integer id;
+	private Integer operationId;
 	
 	public OperationDTO( final Operation operation ){
-		this.id = operation.getOperationId();
+		this.operationId = operation.getOperationId();
 	}
 
-	public Integer getId() {
-		return id;
+	public Integer getOperationId() {
+		return operationId;
 	}
 }

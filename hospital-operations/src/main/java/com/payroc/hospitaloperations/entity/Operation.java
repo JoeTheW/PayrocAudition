@@ -45,9 +45,7 @@ public class Operation {
 	private Date dateProcessed;
 	@Lob
 	private String metadata;
-	@OneToOne
-	@JoinColumn(name = "request_cache_id")
-	private RequestCache requestCache;
+	private String idempotencyKey;
 	
     public Operation() {}
     
@@ -56,6 +54,7 @@ public class Operation {
     {
         operationStatus = OperationStatusEnum.PENDING;
 		dateQueued = new Date();
+		dateSubmitted = new Date();
     }
 
     public Integer getOperationId() {
@@ -118,16 +117,26 @@ public class Operation {
 		this.metadata = metadata;
 	}
 
-	public RequestCache getRequestCache() {
-		return requestCache;
+	
+
+	public String getIdempotencyKey() {
+		return idempotencyKey;
 	}
 
-	public void setRequestCache( final RequestCache requestCache) {
-		this.requestCache = requestCache;
+	public void setIdempotencyKey( final String idempotencyKey) {
+		this.idempotencyKey = idempotencyKey;
 	}
 
 	public void setOperationId( final Integer operationId) {
 		this.operationId = operationId;
+	}
+
+	public static String getGET_BY_ID() {
+		return GET_BY_ID;
+	}
+
+	public static void setGET_BY_ID(String gET_BY_ID) {
+		GET_BY_ID = gET_BY_ID;
 	}
 
 	@Override
