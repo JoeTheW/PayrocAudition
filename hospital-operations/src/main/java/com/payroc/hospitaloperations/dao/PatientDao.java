@@ -1,13 +1,13 @@
 package com.payroc.hospitaloperations.dao;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
 import com.payroc.hospitaloperations.entity.Patient;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @Repository
 public class PatientDao {
@@ -21,9 +21,13 @@ public class PatientDao {
     }
 
     public Patient getById(Integer id) {
+        try {
         return em.createNamedQuery(Patient.GET_BY_ID, Patient.class)
                  .setParameter("id", id)
                  .getSingleResult();
+        } catch (Exception e) {
+        	return null;
+        }
     }
     
     public List<Patient> findPatientsByName(String name) {

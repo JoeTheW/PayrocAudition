@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.payroc.hospitaloperations.dto.PatientDTO;
 import com.payroc.hospitaloperations.entity.Patient;
+import com.payroc.hospitaloperations.enumeration.ExceptionEnum;
+import com.payroc.hospitaloperations.exception.HospitalOperationException;
 import com.payroc.hospitaloperations.service.PatientService;
+import com.payroc.hospitaloperations.util.ValidationUtils;
 
 @RestController
 public class PatientController {
@@ -38,7 +41,15 @@ public class PatientController {
 	
 	@GetMapping("/patients/{id}")
 	public PatientDTO getPatientById( @PathVariable("id") final Integer patientId ) {
+
+		ValidationUtils.validateMandatoryField(patientId, "patientId");
 		Patient patient = patientService.getPatientById( patientId );
+		
+		if ( patient == null )
+		{
+			throw new HospitalOperationException(ExceptionEnum.EXCEPTION_4040);
+		}
+		
 		return new PatientDTO( patient );
 	}
 }
