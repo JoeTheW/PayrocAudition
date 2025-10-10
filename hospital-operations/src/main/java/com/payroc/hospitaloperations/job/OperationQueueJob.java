@@ -1,6 +1,7 @@
 package com.payroc.hospitaloperations.job;
 
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -25,8 +26,26 @@ public class OperationQueueJob {
     }
 
     public void start() {
+    	resetInProgressOperations();
     	logger.info("Starting operation queue job");
-        scheduler.scheduleAtFixedRate(this::processNextOperation, 0, 5, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(this::processNextOperation, 0, 60, TimeUnit.SECONDS);
+    }
+    
+    private void resetInProgressOperations() 
+    {
+    	List<Operation> inProgressOperations = 
+    			operationService.getOperationsWithStatus( OperationStatusEnum.PROCESSING );
+    	
+    	if ( !inProgressOperations.isEmpty() )
+    	{
+    		logger.info(String.format("Resetting %s orphaned operations", inProgressOperations.size() ));
+    		
+    		for ( Operation op : inProgressOperations )
+    		{
+    			op.setOperationStatus(OperationStatusEnum.PENDING);
+    			operationService.updateOperation(op);
+    		}
+    	}
     }
 
     private void processNextOperation() {
@@ -40,7 +59,6 @@ public class OperationQueueJob {
     	}
     	logger.info("Processing operation " + oldestPending.toString() );
     	processOperation( oldestPending );
-//    	logger.info("Processing next operation in queue...");
     }
     
     private void processOperation(Operation operation) {
