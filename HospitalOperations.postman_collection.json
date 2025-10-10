@@ -1,0 +1,34 @@
+{
+	"info": {
+		"_postman_id": "f1e2f80a-e7df-484a-8998-187b0d0f06aa",
+		"name": "Hospital Operations Api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26943233"
+	},
+	"item": [
+		{
+			"name": "getPatientById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/patients/:patientId",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"patients",
+						":patientId"
+					],
+					"variable": [
+						{
+							"key": "patientId",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
