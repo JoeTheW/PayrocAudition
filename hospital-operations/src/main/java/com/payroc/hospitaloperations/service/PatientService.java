@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.payroc.hospitaloperations.dao.PatientDao;
 import com.payroc.hospitaloperations.entity.Operation;
 import com.payroc.hospitaloperations.entity.Patient;
+import com.payroc.hospitaloperations.enumeration.ExceptionEnum;
+import com.payroc.hospitaloperations.enumeration.PatientStatusEnum;
+import com.payroc.hospitaloperations.exception.HospitalOperationException;
 
 @Service
 public class PatientService {
@@ -45,4 +48,21 @@ public class PatientService {
         Operation operation = operationService.submitPatientDischargeOperation( idempotencyKey, patient );
         return operation;
     }
+    
+    @Transactional
+	public void performPatientDischargeOperation( final Integer patientId ) 
+    {
+    	Patient patient = getPatientById(patientId);
+    	if ( patient == null )
+    	{
+    		throw new HospitalOperationException(ExceptionEnum.EXCEPTION_4040);
+    	}
+    	if ( patient.getStatus().equals( PatientStatusEnum.DISCHARGED ))
+    	{
+    		throw new HospitalOperationException(ExceptionEnum.EXCEPTION_4001);
+    	}
+    	
+    	patient.setStatus( PatientStatusEnum.DISCHARGED );
+        patientDao.updatePatient(patient);
+	}
 }

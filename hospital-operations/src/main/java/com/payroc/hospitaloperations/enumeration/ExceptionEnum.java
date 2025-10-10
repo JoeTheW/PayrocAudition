@@ -7,7 +7,8 @@ public enum ExceptionEnum {
     EXCEPTION_4001(4001, "Patient already discharged", 400),
     EXCEPTION_4002(4002, "Patient already admitted", 400),
     EXCEPTION_5001(5001, "Unable to retrieve cached request response", 500),
-	EXCEPTION_5002(5002, "Unable to cache request response", 500);
+	EXCEPTION_5002(5002, "Unable to cache request response", 500),
+	EXCEPTION_5003(5003, "Unable to parse operation data", 500);
 
     private final int code;
     private final String message;

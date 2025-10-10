@@ -22,12 +22,19 @@ import jakarta.persistence.Table;
     @NamedQuery(
     		name = "Operation.getById",
     		query = "SELECT o FROM Operation o WHERE o.operationId = :id"
+    		),
+    @NamedQuery(
+    		name = "Operation.getBySubmissionDateAsc",
+    		query = "SELECT o FROM Operation o "
+    				+ "WHERE o.operationStatus = :status "
+    				+ "order by o.dateSubmitted asc"
     		)
 })
 @Table(name = "operation")
 public class Operation {
 	
-	public static String GET_BY_ID = "Patient.getById";
+	public static String GET_BY_ID = "Operation.getById";
+	public static String GET_BY_SUBMISSION_DATE_ASC = "Operation.getBySubmissionDateAsc";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

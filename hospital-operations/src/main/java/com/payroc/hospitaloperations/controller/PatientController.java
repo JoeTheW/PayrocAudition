@@ -18,6 +18,7 @@ import com.payroc.hospitaloperations.entity.Operation;
 import com.payroc.hospitaloperations.entity.Patient;
 import com.payroc.hospitaloperations.entity.RequestCache;
 import com.payroc.hospitaloperations.enumeration.ExceptionEnum;
+import com.payroc.hospitaloperations.enumeration.PatientStatusEnum;
 import com.payroc.hospitaloperations.exception.HospitalOperationException;
 import com.payroc.hospitaloperations.service.PatientService;
 import com.payroc.hospitaloperations.service.RequestCacheService;
@@ -93,14 +94,19 @@ public class PatientController {
         	return new ResponseEntity(previousResponseDTO.getResponseBody(), status );
         }
         
-        //Submit discharge operation
+        //Validate
 		Patient patient = patientService.getPatientById( patientId );
 		
 		if ( patient == null )
 		{
 			throw new HospitalOperationException(ExceptionEnum.EXCEPTION_4040);
 		}
+		if ( patient.getStatus().equals( PatientStatusEnum.DISCHARGED ))
+		{
+			throw new HospitalOperationException(ExceptionEnum.EXCEPTION_4001);
+		}
 		 
+		//Submit discharge operation
 	 	Operation op = patientService.submitPatientDischarge( compositeKey, patient );
 	 	OperationDTO responseDTO = new OperationDTO(op);
 	 	RequestCacheResponseDTO cacheResponseDTO = new RequestCacheResponseDTO( 202, responseDTO);

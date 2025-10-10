@@ -12,6 +12,7 @@ import com.payroc.hospitaloperations.dto.DischargeOperationDataDTO;
 import com.payroc.hospitaloperations.entity.Operation;
 import com.payroc.hospitaloperations.entity.Patient;
 import com.payroc.hospitaloperations.enumeration.ExceptionEnum;
+import com.payroc.hospitaloperations.enumeration.OperationStatusEnum;
 import com.payroc.hospitaloperations.enumeration.OperationTypeEnum;
 import com.payroc.hospitaloperations.exception.HospitalOperationException;
 
@@ -20,9 +21,12 @@ public class OperationService {
 	private static final Logger logger = LoggerFactory.getLogger(OperationService.class);
 
     private final OperationDao operationDao;
+    private final PatientService patientService;
 
-    public OperationService( OperationDao operationDao ) {
+    public OperationService( OperationDao operationDao,
+    		PatientService patientService ) {
         this.operationDao = operationDao;
+        this.patientService = patientService;
     }
 
     @Transactional(readOnly = true)
@@ -51,6 +55,43 @@ public class OperationService {
 			// log error
 			logger.error("Error parsing cached response: {}", e.getMessage(), e);
             throw new HospitalOperationException(ExceptionEnum.EXCEPTION_5001);
+        }
+    }
+    
+    @Transactional(readOnly = true)
+    public Operation getOldestOperationWithStatus( final OperationStatusEnum status )
+    {
+    	return operationDao.getOldestOperationWithStatus(status);
+    }
+
+    @Transactional
+    public void updateOperation( Operation operation )
+    {
+    	operationDao.update( operation );
+    }
+
+	public boolean performOperation(Operation operation) {
+		switch ( operation.getOperationType() )
+        {
+            case DISCHARGE_PATIENT:
+                DischargeOperationDataDTO dto = parseOperationData(operation, DischargeOperationDataDTO.class);
+                patientService.performPatientDischargeOperation( dto.getPatientId() );
+                return true;
+            default:
+                logger.error("Unknown operation type: " + operation.getOperationType() );
+                return false;
+        }
+	}
+
+    public <T> T parseOperationData(Operation operation, Class<T> clazz)
+    throws HospitalOperationException
+    {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(operation.getOperationData(), clazz);
+        } catch (Exception e) {
+            logger.error("Failed to parse operationData for operation {}: {}", operation.getOperationId(), e.getMessage(), e);
+            throw new HospitalOperationException( ExceptionEnum.EXCEPTION_5001 );
         }
     }
 }

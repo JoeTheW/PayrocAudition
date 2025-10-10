@@ -39,4 +39,9 @@ public class PatientDao {
     public void save(Patient patient) {
         em.persist(patient);
     }
+    
+    public void updatePatient(Patient patient)
+    {
+    	em.merge( patient );
+    }
 }
