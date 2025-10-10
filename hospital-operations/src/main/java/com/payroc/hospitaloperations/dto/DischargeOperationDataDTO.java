@@ -5,6 +5,10 @@ public class DischargeOperationDataDTO {
 	
 	private Integer patientId;
 	
+	public DischargeOperationDataDTO() {
+		
+	}
+	
 	public DischargeOperationDataDTO( final Integer patientId ){
 		this.patientId = patientId;
 	}

@@ -1,6 +1,8 @@
 package com.payroc.hospitaloperations.dao;
 
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.payroc.hospitaloperations.entity.Operation;
@@ -34,6 +36,12 @@ public class OperationDao {
     	} catch (Exception e) {
     		return null;
     	}
+    }
+    
+    public List<Operation> getOperationsWithStatus( final OperationStatusEnum status ) {
+    		return em.createNamedQuery(Operation.GET_BY_STATUS_AND_DATE_ASCENDING, Operation.class)
+    				.setParameter("status", status)
+    				.getResultList();
     }
 
     public void save(Operation operation) {

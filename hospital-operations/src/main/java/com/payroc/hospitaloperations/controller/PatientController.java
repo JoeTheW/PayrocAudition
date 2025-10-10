@@ -117,4 +117,49 @@ public class PatientController {
 	 	requestCacheService.cacheRequest( compositeKey, cacheResponseDTO );
 	 	return new ResponseEntity( responseDTO, HttpStatusCode.valueOf(202) );
 	 }
+	 
+	 @PostMapping("/patients/{id}/discharge/undo")
+	 public ResponseEntity<Object> undoDischargePatient( 
+			 @RequestHeader("x-idempotency-key") String idempotencyKey,
+			 @PathVariable("id") final Integer patientId,
+			 HttpServletRequest request ) throws Exception {
+		 
+		 ValidationUtils.validateMandatoryField(patientId, "patientId");
+		 
+		 //if null idempotency key then throw exception
+		 if (idempotencyKey == null) {
+			 throw new HospitalOperationException(ExceptionEnum.EXCEPTION_4000);
+		 }
+		 //Generate composite key
+		 String requestScope = request.getMethod() + ":" + request.getRequestURI();
+		 String compositeKey = requestScope + ":" + idempotencyKey;
+		 
+		 //If already requested, return previous response.
+		 RequestCache previousRequest = requestCacheService.getRequestCacheByKey(compositeKey);
+		 if ( previousRequest != null )
+		 {
+			 RequestCacheResponseDTO previousResponseDTO = requestCacheService.getRequestCacheResponseAsDTO(previousRequest);
+			 HttpStatusCode status = HttpStatusCode.valueOf( previousResponseDTO.getResponseCode() );
+			 return new ResponseEntity(previousResponseDTO.getResponseBody(), status );
+		 }
+		 
+		 //Validate
+		 Patient patient = patientService.getPatientById( patientId );
+		 
+		 if ( patient == null )
+		 {
+			 throw new HospitalOperationException(ExceptionEnum.EXCEPTION_4040);
+		 }
+		 if ( patient.getStatus().equals( PatientStatusEnum.ADMITTED ))
+		 {
+			 throw new HospitalOperationException(ExceptionEnum.EXCEPTION_4002);
+		 }
+		 
+		 //Submit discharge operation
+		 Operation op = operationService.submitUndoPatientDischargeOperation( compositeKey, patient );
+		 OperationDTO responseDTO = new OperationDTO(op);
+		 RequestCacheResponseDTO cacheResponseDTO = new RequestCacheResponseDTO( 202, responseDTO);
+		 requestCacheService.cacheRequest( compositeKey, cacheResponseDTO );
+		 return new ResponseEntity( responseDTO, HttpStatusCode.valueOf(202) );
+	 }
 }

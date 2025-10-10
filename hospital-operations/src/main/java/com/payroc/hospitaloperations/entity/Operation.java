@@ -28,6 +28,12 @@ import jakarta.persistence.Table;
     		query = "SELECT o FROM Operation o "
     				+ "WHERE o.operationStatus = :status "
     				+ "order by o.dateSubmitted asc"
+    		),
+    @NamedQuery(
+    		name = "Operation.getByStatusAndDateAsc",
+    		query = "SELECT o FROM Operation o "
+    				+ "WHERE o.operationStatus = :status "
+    				+ "order by o.dateSubmitted asc"
     		)
 })
 @Table(name = "operation")
@@ -35,6 +41,7 @@ public class Operation {
 	
 	public static String GET_BY_ID = "Operation.getById";
 	public static String GET_BY_SUBMISSION_DATE_ASC = "Operation.getBySubmissionDateAsc";
+	public static String GET_BY_STATUS_AND_DATE_ASCENDING = "Operation.getByStatusAndDateAsc";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
