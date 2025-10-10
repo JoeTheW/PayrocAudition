@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.payroc.hospitaloperations.dao.PatientDao;
-import com.payroc.hospitaloperations.entity.Operation;
 import com.payroc.hospitaloperations.entity.Patient;
 import com.payroc.hospitaloperations.enumeration.ExceptionEnum;
 import com.payroc.hospitaloperations.enumeration.PatientStatusEnum;
@@ -16,11 +15,9 @@ import com.payroc.hospitaloperations.exception.HospitalOperationException;
 public class PatientService {
 
     private final PatientDao patientDao;
-    private final OperationService operationService;
 
-    public PatientService(PatientDao patientDao, OperationService operationService) {
+    public PatientService(PatientDao patientDao) {
         this.patientDao = patientDao;
-        this.operationService = operationService;
     }
 
     @Transactional(readOnly = true)
