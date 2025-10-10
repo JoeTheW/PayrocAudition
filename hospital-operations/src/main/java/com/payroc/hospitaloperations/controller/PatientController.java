@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.payroc.hospitaloperations.dto.OperationDTO;
 import com.payroc.hospitaloperations.dto.PatientDTO;
 import com.payroc.hospitaloperations.dto.RequestCacheResponseDTO;
@@ -20,7 +19,6 @@ import com.payroc.hospitaloperations.entity.Patient;
 import com.payroc.hospitaloperations.entity.RequestCache;
 import com.payroc.hospitaloperations.enumeration.ExceptionEnum;
 import com.payroc.hospitaloperations.exception.HospitalOperationException;
-import com.payroc.hospitaloperations.service.OperationService;
 import com.payroc.hospitaloperations.service.PatientService;
 import com.payroc.hospitaloperations.service.RequestCacheService;
 import com.payroc.hospitaloperations.util.ValidationUtils;
@@ -32,15 +30,12 @@ public class PatientController {
 
 	private final PatientService patientService;
 	private final RequestCacheService requestCacheService;
-	private final OperationService operationService;
 
 	public PatientController( 
 			PatientService patientService,
-			RequestCacheService requestCacheService,
-			OperationService operationService ) {
+			RequestCacheService requestCacheService ) {
 		this.patientService = patientService;
 		this.requestCacheService = requestCacheService;
-		this.operationService = operationService;
 
 		if (patientService.getAllPatients().isEmpty()) {
 			patientService.admitPatient("Steve");
@@ -109,7 +104,7 @@ public class PatientController {
 	 	Operation op = patientService.submitPatientDischarge( compositeKey, patient );
 	 	OperationDTO responseDTO = new OperationDTO(op);
 	 	RequestCacheResponseDTO cacheResponseDTO = new RequestCacheResponseDTO( 202, responseDTO);
-	 	RequestCache requestCache = requestCacheService.cacheRequest( compositeKey, cacheResponseDTO );
+	 	requestCacheService.cacheRequest( compositeKey, cacheResponseDTO );
 	 	return new ResponseEntity( responseDTO, HttpStatusCode.valueOf(202) );
 	 }
 }
