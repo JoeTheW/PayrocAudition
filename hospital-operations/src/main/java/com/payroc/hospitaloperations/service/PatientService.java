@@ -42,12 +42,6 @@ public class PatientService {
     public void admitPatient(final String name) {
         patientDao.save(new Patient(name));
     }
-
-    @Transactional
-    public Operation submitPatientDischarge( final String idempotencyKey, final Patient patient ) {
-        Operation operation = operationService.submitPatientDischargeOperation( idempotencyKey, patient );
-        return operation;
-    }
     
     @Transactional
 	public void performPatientDischargeOperation( final Integer patientId ) 

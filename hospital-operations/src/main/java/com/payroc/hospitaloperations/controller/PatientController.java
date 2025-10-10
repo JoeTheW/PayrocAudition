@@ -20,6 +20,7 @@ import com.payroc.hospitaloperations.entity.RequestCache;
 import com.payroc.hospitaloperations.enumeration.ExceptionEnum;
 import com.payroc.hospitaloperations.enumeration.PatientStatusEnum;
 import com.payroc.hospitaloperations.exception.HospitalOperationException;
+import com.payroc.hospitaloperations.service.OperationService;
 import com.payroc.hospitaloperations.service.PatientService;
 import com.payroc.hospitaloperations.service.RequestCacheService;
 import com.payroc.hospitaloperations.util.ValidationUtils;
@@ -31,12 +32,15 @@ public class PatientController {
 
 	private final PatientService patientService;
 	private final RequestCacheService requestCacheService;
+	private final OperationService operationService;
 
 	public PatientController( 
 			PatientService patientService,
-			RequestCacheService requestCacheService ) {
+			RequestCacheService requestCacheService,
+			OperationService operationService ) {
 		this.patientService = patientService;
 		this.requestCacheService = requestCacheService;
+		this.operationService = operationService;
 
 		if (patientService.getAllPatients().isEmpty()) {
 			patientService.admitPatient("Steve");
@@ -107,7 +111,7 @@ public class PatientController {
 		}
 		 
 		//Submit discharge operation
-	 	Operation op = patientService.submitPatientDischarge( compositeKey, patient );
+	 	Operation op = operationService.submitPatientDischargeOperation( compositeKey, patient );
 	 	OperationDTO responseDTO = new OperationDTO(op);
 	 	RequestCacheResponseDTO cacheResponseDTO = new RequestCacheResponseDTO( 202, responseDTO);
 	 	requestCacheService.cacheRequest( compositeKey, cacheResponseDTO );
