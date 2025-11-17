@@ -1,6 +1,7 @@
 # PayrocAudition - Hospital operations server
 ## Key notes
-I've created my solution with SpringBoot as a basis however I have tried to avoid using SpringBoot _magic_ where I have been able.
+Take home audition for role at Payroc
+I've created my solution with SpringBoot as a basis however I have tried to avoid using SpringBoot _magic_ as per request where I have been able.
 ## Server setup
 The server port is 8080, this can be changed in `application.properties` if needed.
 
